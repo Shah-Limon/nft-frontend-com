@@ -1,0 +1,28 @@
+thank-you-container {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin: 50px auto;
+    max-width: 500px;
+}
+.thank-you-heading {
+    font-size: 2.5rem;
+    color: #007BFF;
+}
+.thank-you-message {
+    font-size: 1.2rem;
+}
+.btn-home {
+    background: #007BFF;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+}
+.btn-home:hover {
+    background: #0056b3;
+}
