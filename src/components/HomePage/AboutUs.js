@@ -13,7 +13,7 @@ const AboutUs = () => {
   return (
     <>
       <section className="about" data-aos="fade-up" data-aos-duration={3000}>
-        <div className="shape" />
+    
         <div className="container">
           {about.map((AboutData) => (
             <div className="row rev">

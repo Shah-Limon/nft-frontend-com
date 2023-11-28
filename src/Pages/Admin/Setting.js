@@ -112,6 +112,16 @@ const Setting = () => {
                 </div>
               </div>
             </div>
+            <div className="col-xl-3 col-md-6">
+              <div className="project-box">
+                <div className="image"></div>
+                <div className="content">
+                  <Link to="/admin/services-list" className="h5 title">
+                    Services List
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

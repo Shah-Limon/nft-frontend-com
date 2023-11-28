@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-
-
 const FeaturesPage = () => {
   const { id } = useParams();
   const [feature, setFeature] = useState([]);
@@ -20,10 +18,10 @@ const FeaturesPage = () => {
         data-aos="fade-up"
         data-aos-duration={2000}
       >
-        <div className="shape" />
+        <div className="shape right" />
 
         <div className="container">
-          {feature.map((e,i ) => (
+          {feature.map((e, i) => (
             <>
               <div className="row  justify-content-center" key={i}>
                 <div className="col-lg-5 col-md-12">

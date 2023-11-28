@@ -1,0 +1,39 @@
+@media only screen and (max-width: 1023px) and (min-width: 320px) {
+  .card-box_service {
+    width: 100%;
+    background: linear-gradient(
+      89.96deg,
+      rgba(255, 255, 255, 0.05) 0.03%,
+      rgba(255, 255, 255, 0.008) 49.66%,
+      rgba(255, 255, 255, 0.05) 99.96%
+    );
+    backdrop-filter: blur(2px);
+    padding: 31px 23px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    height: 100%;
+    z-index: 3;
+  }
+}
+
+.service__text {
+  font-family: "Readex Pro", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.4;
+  position: relative;
+  overflow-x: hidden;
+  color: #ffffff;
+}
+
+
+.service_card{
+  transition: all 0.3s ease-in-out;
+}
+.service_card:hover{
+  transform: translateY(-15px);
+}
+
+.feature__text-left p{
+  margin-bottom: 10px;
+}
