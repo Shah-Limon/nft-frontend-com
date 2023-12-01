@@ -88,18 +88,7 @@ const Setting = () => {
                 </div>
               </div>
             </div>
-            <div className="col-xl-3 col-md-6">
-              <div className="project-box">
-                <div className="image"></div>
-                <div className="content">
-                  {contact.map((e) => (
-                    <Link to="/admin/feature-page" className="h5 title">
-                      Features Page Setting
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
+           
             <div className="col-xl-3 col-md-6">
               <div className="project-box">
                 <div className="image"></div>

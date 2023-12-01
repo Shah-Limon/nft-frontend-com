@@ -68,7 +68,7 @@ const TeamMemberEdit = () => {
     })
       .then((res) => res.json())
       .then((result) => {
-        navigate("/admin/setting-homepage/");
+        navigate("/admin/team/");
       });
   };
 

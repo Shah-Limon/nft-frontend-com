@@ -57,7 +57,7 @@ const SpecialityOptionEdit = () => {
 
   return (
    
-    <div className="payment-setting" data-aos="fade-up" data-aos-duration={2000}>
+    <div className="payment-setting mb-5" data-aos="fade-up" data-aos-duration={2000}>
        <BackToAdminDashboard></BackToAdminDashboard>
       {speciality.map((e) => (
         <form onSubmit={handleEditSpeciality}>

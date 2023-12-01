@@ -6,10 +6,8 @@ import Portfolio from "../components/HomePage/Portfolio";
 import RoadMap from "../components/HomePage/RoadMap";
 import Team from "../components/HomePage/Team";
 import Testimonials from "../components/HomePage/Testimonials";
-import Pricing from "../components/HomePage/Pricing";
 import FeaturesPage from "./FeaturesPage";
 import ServicesList from "../components/HomePage/ServicesList";
-
 
 const Home = () => {
   return (
@@ -20,7 +18,7 @@ const Home = () => {
       <FeaturesPage></FeaturesPage>
       <OurSpeciality></OurSpeciality>
       <Portfolio></Portfolio>
-      <Pricing></Pricing>
+
       <RoadMap></RoadMap>
       <Team></Team>
       <Testimonials></Testimonials>

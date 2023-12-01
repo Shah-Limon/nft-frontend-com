@@ -50,7 +50,7 @@ const HomaPageSetting = () => {
     <div>
       <section className="participants payment-setting">
         <div className="container">
-        <BackToAdminDashboard></BackToAdminDashboard>
+          <BackToAdminDashboard></BackToAdminDashboard>
           <div className="row mt-15">
             <div className="col-lg-3">
               <div className="block-text center">
@@ -100,6 +100,20 @@ const HomaPageSetting = () => {
                 </div>
               </div>
             </div>
+            <div className="col-lg-3">
+              <div className="block-text center">
+                <div className="col">
+                  <h5 className="heading">Features Option</h5>
+
+                  <Link to="/admin/feature-page" className="action-btn">
+                    <span>Edit</span>
+                  </Link>
+
+                  <hr></hr>
+                </div>
+              </div>
+            </div>
+
             <div className="col-lg-3">
               <div className="block-text center">
                 <div className="col">
@@ -178,7 +192,6 @@ const HomaPageSetting = () => {
                 </div>
               </div>
             </div>
-           
           </div>
         </div>
       </section>

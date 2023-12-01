@@ -7,9 +7,15 @@ const MyOrders = () => {
   const [orders, setorders] = useState([]);
   const [user] = useAuthState(auth);
   const itemsPerPage = 10; // Number of items to display per page
-
   const [currentPageOrders, setCurrentPageOrders] = useState(1);
+  const [services, setServices] = useState([]); 
 
+
+ useEffect(() => {
+    fetch(`http://localhost:5000/services-list/`)
+      .then((res) => res.json())
+      .then((info) => setServices(info));
+  }, []);
   useEffect(() => {
     fetch(`http://localhost:5000/orders`)
       .then((res) => res.json())
@@ -41,6 +47,7 @@ const MyOrders = () => {
                 <th>Date</th>
                 <th>Order ID</th>
                 <th>Package</th>
+                <th>Package</th>
                 <th>Price</th>
                 <th>Payment Status</th>
                 <th>Order Status</th>
@@ -59,6 +66,16 @@ const MyOrders = () => {
                     <td>{order.orderDate}</td>
                     <td>{order.orderId}</td>
                     <td>{order.packageName}</td>
+                    <td data-th="Service">
+                    {services.map(
+                      (service) =>
+                        service._id === order.serviceID && (
+                          <Link to={`/service/${service.postSlug}`}>
+                            {service.title}
+                          </Link>
+                        )
+                    )}
+                  </td>
                     <td>{order.packagePrice}$</td>
                     <td>
                       {order.paymentStatus === "Received" && <>You Have Paid</>}

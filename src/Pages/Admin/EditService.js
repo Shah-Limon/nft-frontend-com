@@ -7,17 +7,15 @@ const EditService = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
   const [imgbbApiKey] = useState("1f8cc98e0f42a06989fb5e2589a9a8a4"); // Your imgbb API key
   const [serviceImageFile, setServiceImageFile] = useState(null);
   const [serviceImagePreview, setServiceImagePreview] = useState(null);
   const [postSlug, setPostSlug] = useState("");
+  
 
   const handleServiceImageUpload = (event) => {
     const selectedFile = event.target.files[0];
     setServiceImageFile(selectedFile);
-
     const previewURL = URL.createObjectURL(selectedFile);
     setServiceImagePreview(previewURL);
   };
@@ -41,7 +39,6 @@ const EditService = () => {
     const description = event.target.description.value;
 
     let postSlug = event.target.postSlug.value.trim();
-
     if (!postSlug) {
       postSlug = generateSlug(title);
     }
@@ -56,7 +53,7 @@ const EditService = () => {
       postSlug = newSlug;
     }
 
-    let serviceImg = null;
+    let serviceImg = service.img || null;
     serviceImg = serviceImageFile ? serviceImagePreview : serviceImg;
 
     if (serviceImageFile) {
@@ -82,47 +79,6 @@ const EditService = () => {
       description,
       img: serviceImg,
       postSlug,
-      packageNamePackageOne: event.target.packageNamePackageOne.value,
-      packageImagePackageOne: event.target.packageImagePackageOne.value,
-      pricePackageOne: event.target.pricePackageOne.value,
-      featureOnePackageOne: event.target.featureOnePackageOne.value,
-      featureTwoPackageOne: event.target.featureTwoPackageOne.value,
-      featureThreePackageOne: event.target.featureThreePackageOne.value,
-      featureFourPackageOne: event.target.featureFourPackageOne.value,
-      featureFivePackageOne: event.target.featureFivePackageOne.value,
-      featureSixPackageOne: event.target.featureSixPackageOne.value,
-      featureSevenPackageOne: event.target.featureSevenPackageOne.value,
-      featureEightPackageOne: event.target.featureEightPackageOne.value,
-      featureNinePackageOne: event.target.featureNinePackageOne.value,
-      featureTenPackageOne: event.target.featureTenPackageOne.value,
-
-      packageNamePackageTwo: event.target.packageNamePackageTwo.value,
-      packageImagePackageTwo: event.target.packageImagePackageTwo.value,
-      pricePackageTwo: event.target.pricePackageTwo.value,
-      featureOnePackageTwo: event.target.featureOnePackageTwo.value,
-      featureTwoPackageTwo: event.target.featureTwoPackageTwo.value,
-      featureThreePackageTwo: event.target.featureThreePackageTwo.value,
-      featureFourPackageTwo: event.target.featureFourPackageTwo.value,
-      featureFivePackageTwo: event.target.featureFivePackageTwo.value,
-      featureSixPackageTwo: event.target.featureSixPackageTwo.value,
-      featureSevenPackageTwo: event.target.featureSevenPackageTwo.value,
-      featureEightPackageTwo: event.target.featureEightPackageTwo.value,
-      featureNinePackageTwo: event.target.featureNinePackageTwo.value,
-      featureTenPackageTwo: event.target.featureTenPackageTwo.value,
-
-      packageNamePackageThree: event.target.packageNamePackageThree.value,
-      packageImagePackageThree: event.target.packageImagePackageThree.value,
-      pricePackageThree: event.target.pricePackageThree.value,
-      featureOnePackageThree: event.target.featureOnePackageThree.value,
-      featureTwoPackageThree: event.target.featureTwoPackageThree.value,
-      featureThreePackageThree: event.target.featureThreePackageThree.value,
-      featureFourPackageThree: event.target.featureFourPackageThree.value,
-      featureFivePackageThree: event.target.featureFivePackageThree.value,
-      featureSixPackageThree: event.target.featureSixPackageThree.value,
-      featureSevenPackageThree: event.target.featureSevenPackageThree.value,
-      featureEightPackageThree: event.target.featureEightPackageThree.value,
-      featureNinePackageThree: event.target.featureNinePackageThree.value,
-      featureTenPackageThree: event.target.featureTenPackageThree.value,
     };
 
     const url = `http://localhost:5000/update-service-list/${id}`;
@@ -166,12 +122,21 @@ const EditService = () => {
       .then((res) => res.json())
       .then((info) => {
         setService(info);
-        // Set the postSlug from service.postSlug if it exists
         if (info && info.postSlug) {
           setPostSlug(info.postSlug);
+          setServiceImagePreview(info.img);
         }
       });
   }, [id]);
+
+  const [ServicePackage, setServicesPackages] = useState([]);
+  useEffect(() => {
+    fetch(`http://localhost:5000/service-packages`)
+      .then((res) => res.json())
+      .then((info) => setServicesPackages(info));
+  }, []);
+
+  let rowNumber = 1;
 
   return (
     <div>
@@ -237,489 +202,6 @@ const EditService = () => {
               </div>
             </div>
 
-            <div class="justify-content-center align-items-baseline">
-              <hr></hr>
-              <h4 className="text-center mt-15">Edit Package One</h4>
-              <div class="col-sm">
-                <label className="mt-1 mb-15">Package Name</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Package Name"
-                    name="packageNamePackageOne"
-                    defaultValue={service && service.packageNamePackageOne}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Enter Package Price</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Enter Package Price"
-                    name="pricePackageOne"
-                    defaultValue={service && service.pricePackageOne}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Type the Image URL</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type the Image URL"
-                    name="packageImagePackageOne"
-                    defaultValue={service && service.packageImagePackageOne}
-                  />
-                </div>
-              </div>
-
-              <div class="col-sm">
-                <label className="mt-1">Feature One</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature One"
-                    name="featureOnePackageOne"
-                    defaultValue={service && service.featureOnePackageOne}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Two</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Two"
-                    name="featureTwoPackageOne"
-                    defaultValue={service && service.featureTwoPackageOne}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Three</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type feature Three"
-                    name="featureThreePackageOne"
-                    defaultValue={service && service.featureThreePackageOne}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Four</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Four"
-                    name="featureFourPackageOne"
-                    defaultValue={service && service.featureFourPackageOne}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Five</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Five"
-                    name="featureFivePackageOne"
-                    defaultValue={service && service.featureFivePackageOne}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Six</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Six"
-                    name="featureSixPackageOne"
-                    defaultValue={service && service.featureSixPackageOne}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Seven</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Seven"
-                    name="featureSevenPackageOne"
-                    defaultValue={service && service.featureSevenPackageOne}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Eight</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Eight"
-                    name="featureEightPackageOne"
-                    defaultValue={service && service.featureEightPackageOne}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Nine</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Nine"
-                    name="featureNinePackageOne"
-                    defaultValue={service && service.featureNinePackageOne}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Ten</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Ten"
-                    name="featureTenPackageOne"
-                    defaultValue={service && service.featureTenPackageOne}
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="justify-content-center align-items-baseline">
-              <hr></hr>
-              <h4 className="text-center mt-15">Edit Package Two</h4>
-              <div class="col-sm">
-                <label className="mt-1 mb-15">Package Name</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Package Name"
-                    name="packageNamePackageTwo"
-                    defaultValue={service && service.packageNamePackageTwo}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Enter Package Price</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Enter Package Price"
-                    name="pricePackageTwo"
-                    defaultValue={service && service.pricePackageTwo}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Type the Image URL</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type the Image URL"
-                    name="packageImagePackageTwo"
-                    defaultValue={service && service.packageImagePackageTwo}
-                  />
-                </div>
-              </div>
-
-              <div class="col-sm">
-                <label className="mt-1">Feature One</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature One"
-                    name="featureOnePackageTwo"
-                    defaultValue={service && service.featureOnePackageTwo}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Two</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Two"
-                    name="featureTwoPackageTwo"
-                    defaultValue={service && service.featureTwoPackageTwo}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Three</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type feature Three"
-                    name="featureThreePackageTwo"
-                    defaultValue={service && service.featureThreePackageTwo}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Four</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Four"
-                    name="featureFourPackageTwo"
-                    defaultValue={service && service.featureFourPackageTwo}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Five</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Five"
-                    name="featureFivePackageTwo"
-                    defaultValue={service && service.featureFivePackageTwo}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Six</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Six"
-                    name="featureSixPackageTwo"
-                    defaultValue={service && service.featureSixPackageTwo}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Seven</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Seven"
-                    name="featureSevenPackageTwo"
-                    defaultValue={service && service.featureSevenPackageTwo}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Eight</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Eight"
-                    name="featureEightPackageTwo"
-                    defaultValue={service && service.featureEightPackageTwo}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Nine</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Nine"
-                    name="featureNinePackageTwo"
-                    defaultValue={service && service.featureNinePackageTwo}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Ten</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Ten"
-                    name="featureTenPackageTwo"
-                    defaultValue={service && service.featureTenPackageTwo}
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="justify-content-center align-items-baseline">
-              <hr></hr>
-              <h4 className="text-center mt-15">Edit Package Three</h4>
-              <div class="col-sm">
-                <label className="mt-1 mb-15">Package Name</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Package Name"
-                    name="packageNamePackageThree"
-                    defaultValue={service && service.packageNamePackageThree}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Enter Package Price</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Enter Package Price"
-                    name="pricePackageThree"
-                    defaultValue={service && service.pricePackageThree}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Type the Image URL</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type the Image URL"
-                    name="packageImagePackageThree"
-                    defaultValue={service && service.packageImagePackageThree}
-                  />
-                </div>
-              </div>
-
-              <div class="col-sm">
-                <label className="mt-1">Feature One</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature One"
-                    name="featureOnePackageThree"
-                    defaultValue={service && service.featureOnePackageThree}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Two</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Two"
-                    name="featureTwoPackageThree"
-                    defaultValue={service && service.featureTwoPackageThree}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Three</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type feature Three"
-                    name="featureThreePackageThree"
-                    defaultValue={service && service.featureThreePackageThree}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Four</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Four"
-                    name="featureFourPackageThree"
-                    defaultValue={service && service.featureFourPackageThree}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Five</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Five"
-                    name="featureFivePackageThree"
-                    defaultValue={service && service.featureFivePackageThree}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Six</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Six"
-                    name="featureSixPackageThree"
-                    defaultValue={service && service.featureSixPackageThree}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Seven</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Seven"
-                    name="featureSevenPackageThree"
-                    defaultValue={service && service.featureSevenPackageThree}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Eight</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Eight"
-                    name="featureEightPackageThree"
-                    defaultValue={service && service.featureEightPackageThree}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Nine</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Nine"
-                    name="featureNinePackageThree"
-                    defaultValue={service && service.featureNinePackageThree}
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Ten</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Ten"
-                    name="featureTenPackageThree"
-                    defaultValue={service && service.featureTenPackageThree}
-                  />
-                </div>
-              </div>
-            </div>
             <div className="col-sm">
               <button
                 type="submit"
@@ -737,8 +219,46 @@ const EditService = () => {
           </div>
         </div>
       </form>
+      <div className="container mt-3">
+        <h5 className="text-center mt-15">Package List</h5>
+        {
+          ServicePackage.filter(plan => plan.serviceID === service._id).length < 3 &&
+          <Link
+          to={`/admin/add-service-package/${id}`}
+          className="mt-15 action-btn"
+        >
+          <span>Add Service Package</span>
+        </Link>
+        }
+        
+        <table className="rwd-table">
+          <tbody>
+            <tr>
+              <th>SL No.</th>
+              <th>Package Name</th>
+              <th>Package Price</th>
+              <th>Edit</th>
+            </tr>
+
+            {ServicePackage.map(
+              (e) => 
+                service._id === e.serviceID && (
+                  <tr key={e._id}>
+                    <td>{rowNumber++}</td>
+                    <td data-th="Website Name">{e.packageName}</td>
+                    <td data-th="Email">${e.price} USD</td>
+                    <td data-th="Edit">
+                      <Link to={`/admin/edit-service-package/${e._id}`}>Edit</Link>
+                    </td>
+                  </tr>
+                )
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
 
 export default EditService;
+

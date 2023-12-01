@@ -3,20 +3,27 @@ import "./Dashboard.css";
 import { Link } from "react-router-dom";
 import OrderMenu from "./OrderMenu";
 
-import { ScaleLoader  } from "react-spinners";
+import { ScaleLoader } from "react-spinners";
 
 const DeliveredOrders = () => {
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const itemsPerPage = 10;
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    fetch(`http://localhost:5000/services-list/`)
+      .then((res) => res.json())
+      .then((info) => setServices(info));
+  }, []);
 
   useEffect(() => {
     fetch(`http://localhost:5000/orders`)
       .then((res) => res.json())
       .then((info) => {
         setOrders(info.reverse());
-        setLoading(false); 
+        setLoading(false);
       });
   }, []);
 
@@ -57,7 +64,6 @@ const DeliveredOrders = () => {
               // Render your content here when loading is done
               <div>
                 <h4 className="text-center">Total Delivered Orders</h4>
-              
               </div>
             )}
           </div>
@@ -68,6 +74,7 @@ const DeliveredOrders = () => {
                 <th>SL No.</th>
                 <th>Date</th>
                 <th>Name</th>
+                <th>Service</th>
                 <th>Package</th>
                 <th>Price</th>
                 <th>Website</th>
@@ -81,6 +88,17 @@ const DeliveredOrders = () => {
                   <td>{index + 1 + (currentPage - 1) * itemsPerPage}</td>
                   <td>{item.orderDate}</td>
                   <td>{item.customerName}</td>
+
+                  <td data-th="Service">
+                    {services.map(
+                      (service) =>
+                        service._id === item.serviceID && (
+                          <Link to={`/service/${service.postSlug}`}>
+                            {service.title}
+                          </Link>
+                        )
+                    )}
+                  </td>
                   <td>{item.packageName}</td>
                   <td>${item.packagePrice}</td>
                   <td>{item.customerWebsite}</td>

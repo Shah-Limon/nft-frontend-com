@@ -9,10 +9,11 @@ const UserDashboard = () => {
   const [data, setData] = useState([]);
   const [orders, setOrders] = useState([]);
   const [user] = useAuthState(auth);
-
+  const [services, setServices] = useState([]); 
   const itemsPerPage = 10; // Number of items to display per page
   const [currentPageOrders, setCurrentPageOrders] = useState(1);
   const [currentPageData, setCurrentPageData] = useState(1);
+
 
   useEffect(() => {
     fetch(`http://localhost:5000/website`)
@@ -25,6 +26,15 @@ const UserDashboard = () => {
       .then((res) => res.json())
       .then((info) => setOrders(info.reverse()));
   }, []);
+
+
+
+
+  useEffect(() => {
+     fetch(`http://localhost:5000/services-list/`)
+       .then((res) => res.json())
+       .then((info) => setServices(info));
+   }, []);
 
   let rowNumberOrders = (currentPageOrders - 1) * itemsPerPage + 1;
   let rowNumberData = (currentPageData - 1) * itemsPerPage + 1;
@@ -65,6 +75,7 @@ const UserDashboard = () => {
                 <th>SL No.</th>
                 <th>Date</th>
                 <th>Order ID</th>
+                <th>Service</th>
                 <th>Package</th>
                 <th>Price</th>
                 <th>Payment Status</th>
@@ -83,6 +94,17 @@ const UserDashboard = () => {
                     <td>{rowNumberOrders++}</td>
                     <td>{order.orderDate}</td>
                     <td>{order.orderId}</td>
+
+                    <td data-th="Service">
+                    {services.map(
+                      (service) =>
+                        service._id === order.serviceID && (
+                          <Link to={`/service/${service.postSlug}`}>
+                            {service.title}
+                          </Link>
+                        )
+                    )}
+                  </td>
                     <td>{order.packageName}</td>
                     <td>{order.packagePrice}$</td>
                     <td>{order.paymentStatus}</td>

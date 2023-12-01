@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import BackToAdminDashboard from "../../Pages/Admin/BackToAdminDashboard";
 
 const CreateService = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState(null);
@@ -75,54 +76,11 @@ const CreateService = () => {
       }
     }
 
-
     const chooseData = {
       title,
       description,
       img: serviceImg,
       postSlug,
-
-      packageNamePackageOne: event.target.packageNamePackageOne.value,
-      packageImagePackageOne: event.target.packageImagePackageOne.value,
-      pricePackageOne: event.target.pricePackageOne.value,
-      featureOnePackageOne: event.target.featureOnePackageOne.value,
-      featureTwoPackageOne: event.target.featureTwoPackageOne.value,
-      featureThreePackageOne: event.target.featureThreePackageOne.value,
-      featureFourPackageOne: event.target.featureFourPackageOne.value,
-      featureFivePackageOne: event.target.featureFivePackageOne.value,
-      featureSixPackageOne: event.target.featureSixPackageOne.value,
-      featureSevenPackageOne: event.target.featureSevenPackageOne.value,
-      featureEightPackageOne: event.target.featureEightPackageOne.value,
-      featureNinePackageOne: event.target.featureNinePackageOne.value,
-      featureTenPackageOne: event.target.featureTenPackageOne.value,
-
-      packageNamePackageTwo: event.target.packageNamePackageTwo.value,
-      packageImagePackageTwo: event.target.packageImagePackageTwo.value,
-      pricePackageTwo: event.target.pricePackageTwo.value,
-      featureOnePackageTwo: event.target.featureOnePackageTwo.value,
-      featureTwoPackageTwo: event.target.featureTwoPackageTwo.value,
-      featureThreePackageTwo: event.target.featureThreePackageTwo.value,
-      featureFourPackageTwo: event.target.featureFourPackageTwo.value,
-      featureFivePackageTwo: event.target.featureFivePackageTwo.value,
-      featureSixPackageTwo: event.target.featureSixPackageTwo.value,
-      featureSevenPackageTwo: event.target.featureSevenPackageTwo.value,
-      featureEightPackageTwo: event.target.featureEightPackageTwo.value,
-      featureNinePackageTwo: event.target.featureNinePackageTwo.value,
-      featureTenPackageTwo: event.target.featureTenPackageTwo.value,
-
-      packageNamePackageThree: event.target.packageNamePackageThree.value,
-      packageImagePackageThree: event.target.packageImagePackageThree.value,
-      pricePackageThree: event.target.pricePackageThree.value,
-      featureOnePackageThree: event.target.featureOnePackageThree.value,
-      featureTwoPackageThree: event.target.featureTwoPackageThree.value,
-      featureThreePackageThree: event.target.featureThreePackageThree.value,
-      featureFourPackageThree: event.target.featureFourPackageThree.value,
-      featureFivePackageThree: event.target.featureFivePackageThree.value,
-      featureSixPackageThree: event.target.featureSixPackageThree.value,
-      featureSevenPackageThree: event.target.featureSevenPackageThree.value,
-      featureEightPackageThree: event.target.featureEightPackageThree.value,
-      featureNinePackageThree: event.target.featureNinePackageThree.value,
-      featureTenPackageThree: event.target.featureTenPackageThree.value,
     };
 
     const url = `http://localhost:5000/add-service`;
@@ -152,22 +110,6 @@ const CreateService = () => {
       .replace(/^-|-$/g, "");
   };
 
-  const handleImageChange = (event) => {
-    const selectedFile = event.target.files[0];
-    setImageFile(selectedFile);
-
-    const previewURL = URL.createObjectURL(selectedFile);
-    setImagePreview(previewURL);
-  };
-
-  const [services, setServices] = useState([]);
-
-  useEffect(() => {
-    fetch(`http://localhost:5000/services-list`)
-      .then((res) => res.json())
-      .then((info) => setServices(info.reverse()));
-  }, []);
-
   const handleDeleteService = (serviceId) => {
     fetch(`http://localhost:5000/service/${serviceId}`, {
       method: "DELETE",
@@ -189,11 +131,36 @@ const CreateService = () => {
       });
   };
 
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    fetch(`http://localhost:5000/services-list`)
+      .then((res) => res.json())
+      .then((info) => setServices(info.reverse()));
+  }, []);
+
+  const [servicesTitle, setServicesTitle] = useState([]);
+
+  useEffect(() => {
+    fetch(`http://localhost:5000/service-title`)
+      .then((res) => res.json())
+      .then((info) => setServicesTitle(info));
+  }, []);
+
   return (
-    <div>
+    <div className="mb-5">
       <BackToAdminDashboard></BackToAdminDashboard>
       <div className="container mt-3">
         <h5 className="text-center mt-15">Services List</h5>
+
+        {servicesTitle.map((e) => (
+          <Link key={e.id} to={`/admin/edit-service-title/${e._id}`}>
+            <h6 className="mt-15 action-btn">
+              <span>Edit Service Title</span>
+            </h6>
+          </Link>
+        ))}
+
         <table className="rwd-table">
           <tbody>
             <tr>
@@ -223,6 +190,7 @@ const CreateService = () => {
         </table>
       </div>
       <h4 className="text-center mt-15">Add Service</h4>
+
       <form className="form mb-15" onSubmit={handleAddService}>
         <input hidden name="postSlug" />
         <div className="container">
@@ -269,450 +237,6 @@ const CreateService = () => {
               </div>
             </div>
 
-            <div class="justify-content-center align-items-baseline">
-              <hr></hr>
-              <h4 className="text-center mt-15">PackageOne</h4>
-              <div class="col-sm">
-                <label className="mt-1 mb-15">Package Name</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Package Name"
-                    name="packageNamePackageOne"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Enter Package Price</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Enter Package Price"
-                    name="pricePackageOne"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Type the Image URL</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type the Image URL"
-                    name="packageImagePackageOne"
-                  />
-                </div>
-              </div>
-
-              <div class="col-sm">
-                <label className="mt-1">Feature One</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature One"
-                    name="featureOnePackageOne"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Two</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Two"
-                    name="featureTwoPackageOne"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Three</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type feature Three"
-                    name="featureThreePackageOne"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Four</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Four"
-                    name="featureFourPackageOne"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Five</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Five"
-                    name="featureFivePackageOne"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Six</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Six"
-                    name="featureSixPackageOne"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Seven</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Seven"
-                    name="featureSevenPackageOne"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Eight</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Eight"
-                    name="featureEightPackageOne"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Nine</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Nine"
-                    name="featureNinePackageOne"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Ten</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Ten"
-                    name="featureTenPackageOne"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="justify-content-center align-items-baseline">
-              <hr></hr>
-              <h4 className="text-center mt-15">Package Two</h4>
-              <div class="col-sm">
-                <label className="mt-1 mb-15">Package Name</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Package Name"
-                    name="packageNamePackageTwo"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Enter Package Price</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Enter Package Price"
-                    name="pricePackageTwo"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Type the Image URL</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type the Image URL"
-                    name="packageImagePackageTwo"
-                  />
-                </div>
-              </div>
-
-              <div class="col-sm">
-                <label className="mt-1">Feature One</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature One"
-                    name="featureOnePackageTwo"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Two</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Two"
-                    name="featureTwoPackageTwo"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Three</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type feature Three"
-                    name="featureThreePackageTwo"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Four</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Four"
-                    name="featureFourPackageTwo"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Five</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Five"
-                    name="featureFivePackageTwo"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Six</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Six"
-                    name="featureSixPackageTwo"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Seven</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Seven"
-                    name="featureSevenPackageTwo"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Eight</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Eight"
-                    name="featureEightPackageTwo"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Nine</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Nine"
-                    name="featureNinePackageTwo"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Ten</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Ten"
-                    name="featureTenPackageTwo"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="justify-content-center align-items-baseline">
-              <hr></hr>
-              <h4 className="text-center mt-15">Package Three</h4>
-              <div class="col-sm">
-                <label className="mt-1 mb-15">Package Name</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Package Name"
-                    name="packageNamePackageThree"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Enter Package Price</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Enter Package Price"
-                    name="pricePackageThree"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Type the Image URL</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type the Image URL"
-                    name="packageImagePackageThree"
-                  />
-                </div>
-              </div>
-
-              <div class="col-sm">
-                <label className="mt-1">Feature One</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature One"
-                    name="featureOnePackageThree"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Two</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Two"
-                    name="featureTwoPackageThree"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Three</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type feature Three"
-                    name="featureThreePackageThree"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Four</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Four"
-                    name="featureFourPackageThree"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Five</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Five"
-                    name="featureFivePackageThree"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Six</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Six"
-                    name="featureSixPackageThree"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Seven</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Seven"
-                    name="featureSevenPackageThree"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Eight</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Eight"
-                    name="featureEightPackageThree"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Nine</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Nine"
-                    name="featureNinePackageThree"
-                  />
-                </div>
-              </div>
-              <div class="col-sm">
-                <label className="mt-1">Feature Ten</label>
-                <div class="form-group mb-3">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Type Feature Ten"
-                    name="featureTenPackageThree"
-                  />
-                </div>
-              </div>
-            </div>
             <div className="col-sm">
               <button type="submit" className="action-btn" disabled={loading}>
                 {loading ? <span>Adding...</span> : <span>Add Service</span>}

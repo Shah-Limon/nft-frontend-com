@@ -1,176 +1,210 @@
-// Your React component (CreateService.js)
+import React, { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
+import auth from "../firebase.init";
+import { TypeAnimation } from "react-type-animation";
+import Swiper from "swiper";
 
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import BackToAdminDashboard from "../../Pages/Admin/BackToAdminDashboard";
 
-const CreateService = () => {
+
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // Import your icon library
+import AliceCarousel from "react-alice-carousel";
+
+const Banner = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const [user] = useAuthState(auth);
+  const [swiper, setSwiper] = useState(null);
 
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [imgbbApiKey] = useState("1f8cc98e0f42a06989fb5e2589a9a8a4"); // Your imgbb API key
+  const [banner, setBanner] = useState([]);
+  const [sliders, setSliders] = useState([]);
 
-  const checkSlugExists = async (slug) => {
-    try {
-      const response = await axios.get(`http://localhost:5000/check-slug/${slug}`);
-      return response.data;
-    } catch (error) {
-      console.error("Error checking slug:", error);
-      return [];
-    }
-  };
+  useEffect(() => {
+    fetch(`http://localhost:5000/banner/`)
+      .then((res) => res.json())
+      .then((info) => setBanner(info));
+  }, [id]);
+  useEffect(() => {
+    fetch(`http://localhost:5000/sliders/`)
+      .then((res) => res.json())
+      .then((info) => setSliders(info));
+  }, [id]);
 
-  const handleMetaUpdate = async (event) => {
+  useEffect(() => {
+    const swiperInstance = new Swiper(".bannerSwiper", {
+      slidesPerView: 1,
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+    });
+
+    setSwiper(swiperInstance);
+  }, []);
+
+  const handleAddWebsite = (event) => {
     event.preventDefault();
-    const title = event.target.title.value;
-    const description = event.target.description.value;
-    let postSlug = event.target.postSlug.value.trim(); // Get the entered slug
+    const email = event.target.email.value;
+    const website = event.target.website.value;
+    const userMail = event.target.userMail.value;
+    const auditStatus = event.target.auditStatus.value;
 
-    if (!postSlug) {
-      // If no slug is provided, generate one from the title
-      postSlug = generateSlug(title);
-    }
-
-    const existingSlugs = await checkSlugExists(postSlug);
-
-    if (existingSlugs.includes(postSlug)) {
-      let slugCounter = 1;
-      let newSlug = postSlug;
-
-      while (existingSlugs.includes(newSlug)) {
-        newSlug = `${postSlug}-${slugCounter}`;
-        slugCounter++;
-      }
-
-      postSlug = newSlug;
-    }
-
-    let img = null;
-    img = imageFile ? imagePreview : img;
-
-    if (imageFile) {
-      try {
-        const formData = new FormData();
-        formData.append("image", imageFile);
-        formData.append("key", imgbbApiKey);
-
-        const imgbbResponse = await axios.post(
-          "https://api.imgbb.com/1/upload",
-          formData
-        );
-
-        img = imgbbResponse.data.data.url;
-      } catch (error) {
-        console.error("Image upload to imgbb failed:", error);
-        return;
-      }
-    }
-
-    const chooseData = {
-      title,
-      description,
-      img,
-      postSlug,
+    const websiteCheck = {
+      email,
+      website,
+      userMail,
+      auditStatus
     };
 
-    const url = `http://localhost:5000/add-service`;
+    const url = `http://localhost:5000/add-website`;
     fetch(url, {
       method: "POST",
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify(chooseData),
+      body: JSON.stringify(websiteCheck),
     })
       .then((res) => res.json())
       .then((result) => {
-        navigate("/admin/setting");
+        navigate("/submitted-website");
       });
   };
 
-  const generateSlug = (title) => {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
+  const handleNextSlide = () => {
+    if (swiper) {
+      swiper.slideNext();
+    }
   };
 
-  const handleImageChange = (event) => {
-    const selectedFile = event.target.files[0];
-    setImageFile(selectedFile);
-
-    const previewURL = URL.createObjectURL(selectedFile);
-    setImagePreview(previewURL);
+  const handlePrevSlide = () => {
+    if (swiper) {
+      swiper.slidePrev();
+    }
   };
 
   return (
-    <div>
-      <BackToAdminDashboard></BackToAdminDashboard>
-      <form className="form mb-15" onSubmit={handleMetaUpdate}>
-      <form className="form mb-15" onSubmit={handleMetaUpdate}>
+    <>
+      <section className="banner s2" data-aos="fade-up" data-aos-duration={3000}>
+        <div className="shape" />
+        <div className="shape right" />
         <div className="container">
-          <div className="justify-content-center align-items-baseline">
-            <div className="col-sm">
-              <label className="mt-1">Add Service Image</label>
-              <div className="form-group mb-3">
-                <input
-                  type="file"
-                  className="form-control"
-                  accept="image/*"
-                  onChange={handleImageChange}
+          <div className="row">
+            <div className="col-12">
+            {banner.map((e,i) => (
+                <div className="block-text center" key={i}>
+                  <h6 className="sub-heading">
+                    <span>{e.bannerToptext}</span>
+                  </h6>
+                  <h2 className="heading headling__slider">
+                    {e.bannerHeadingText1} <br /> {e.bannerHeadingText2} {}
+                    <span className="arlo_tm_animation_text_word">
+                      <TypeAnimation
+                        sequence={[
+                          e.typingHeading1,
+                          1000,
+                          e.typingHeading2,
+                          1000,
+                          e.typingHeading3,
+                          1000,
+                        ]}
+                        wrapper="span"
+                        speed={50}
+                        repeat={Infinity}
+                      />
+                    </span>
+                    <br />
+                  </h2>
+                  <p className="mb-34 fs-4">{e.bannertext}</p>
+                  <form
+                    onSubmit={handleAddWebsite}
+                    class="form card-box"
+                    style={{ width: "100%" }}
+                  >
+                    <input required type="text" hidden name="auditStatus" value="Incomplete"/>
+                    <div class="container">
+                      <div class="row justify-content-center align-items-baseline">
+                        <div class="col-sm">
+                          <div class="form-group mb-3">
+                            <input
+                              required
+                              type="email"
+                              class="form-control"
+                              placeholder="Your Email"
+                              name="email"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <input
+                              required
+                              type="text"
+                              class="form-control"
+                              placeholder="Your Website"
+                              name="website"
+                            />
+                          </div>
+                        </div>
+                        <input
+                          hidden
+                          type="email"
+                          class="form-control"
+                          name="userMail"
+                          value={user?.email}
+                        />
+                        <div class="col-sm">
+                          <button type="submit" class="action-btn">
+                            <span>Submit</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              ))}
+              <div className="bannerSwiper">
+                <AliceCarousel
+                  mouseTracking
+                  items={sliders.map((e, i) => (
+                    <div className="card-box card-custom">
+                        <div className="top d-flex">
+                          <span className="icon-logo-01" />
+                          <div>
+                            <h6>{e.sliderTitle}</h6>
+                          </div>
+                        </div>
+                        <div className="content">
+                          <div className="image">
+                            <img src={e.sliderImg} alt="" />
+                          </div>
+                          <div className="info d-flex">
+                            <div>
+                              <p>
+                                {e.sliderDesc.length > 160
+                                  ? `${e.sliderDesc.slice(0, 160)}...`
+                                  : e.sliderDesc}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  ))}
+                  responsive={{
+                    0: { items: 1 },
+                    568: { items: 2 },
+                    1024: { items: 3 },
+                  }}
+                  controlsStrategy="alternate"
                 />
               </div>
-              {imagePreview && (
-                <img
-                  src={imagePreview}
-                  alt="Images"
-                  style={{ maxWidth: "100px" }}
-                />
-              )}
-            </div>
-
-            <div class="col-sm">
-              <label className="mt-1">Type Service Title</label>
-              <div class="form-group mb-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Service Title"
-                  name="title"
-                />
-              </div>
-            </div>
-            <div class="col-sm">
-              <label className="mt-1">Post Slug</label>
-              <div class="form-group mb-3">
-                <input type="text" class="form-control" name="postSlug" />
-              </div>
-            </div>
-            <div class="col-sm">
-              <label className="mt-1">Type Service Description</label>
-              <div class="form-group mb-3">
-                <textarea
-                  type="text"
-                  class="form-control"
-                  placeholder="Type Service Description"
-                  style={{ width: "100%", minHeight: "200px" }}
-                  name="description"
-                />
-              </div>
-            </div>
-            <div className="col-sm">
-              <button type="submit" className="action-btn">
-                <span>Add Service</span>
-              </button>
+             
             </div>
           </div>
         </div>
-      </form>
-      </form>
-    </div>
+      </section>
+    </>
   );
 };
 
-export default CreateService;
+export default Banner;

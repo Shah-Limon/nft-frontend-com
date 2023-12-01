@@ -635,3 +635,8 @@ ul.custom-orders-ul {
 .feature__text-left{
   text-align: left;
 }
+
+
+.portfolio__right img {
+	border-radius: 10px;
+}

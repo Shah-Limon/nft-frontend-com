@@ -4,11 +4,18 @@ import OrderMenus from "../../components/Shared/OrderMenus";
 
 const Orders = () => {
   const [orders, setorders] = useState([]);
+  const [services, setServices] = useState([]);
 
   useEffect(() => {
     fetch(`http://localhost:5000/orders`)
       .then((res) => res.json())
       .then((info) => setorders(info));
+  }, []);
+
+  useEffect(() => {
+    fetch(`http://localhost:5000/services-list/`)
+      .then((res) => res.json())
+      .then((info) => setServices(info));
   }, []);
 
   return (

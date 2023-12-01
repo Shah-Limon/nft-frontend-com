@@ -8,6 +8,7 @@ const TotalOrders = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const paginationDigits = 3;
+  const [services, setServices] = useState([]);
 
   useEffect(() => {
     fetch(`http://localhost:5000/orders`)
@@ -15,8 +16,11 @@ const TotalOrders = () => {
       .then((info) => setOrders(info.reverse()));
   }, []);
 
-
-
+  useEffect(() => {
+    fetch(`http://localhost:5000/services-list/`)
+      .then((res) => res.json())
+      .then((info) => setServices(info));
+  }, []);
 
   // Filter the orders with paymentStatus === "Received"
   const receivedOrders = orders.filter(
@@ -29,37 +33,25 @@ const TotalOrders = () => {
     0
   );
 
-  // // Sort orders by order date in descending order (most recent first)
-  // const sortedOrders = [...orders].sort((a, b) => {
-  //   return new Date(b.orderDate) - new Date(a.orderDate);
-  // });
 
-  // const paginatedOrders = sortedOrders.slice(
-  //   (currentPage - 1) * itemsPerPage,
-  //   currentPage * itemsPerPage
-  // );
+  // Pagination function
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
-  // const totalPages = Math.ceil(sortedOrders.length / itemsPerPage);
+  const totalPages = Math.ceil(orders.length / itemsPerPage);
 
-  // const changePage = (page) => {
-  //   setCurrentPage(page);
-  // };
+  // Calculate the range of pagination digits
+  const startDigit = Math.max(
+    1,
+    currentPage - Math.floor(paginationDigits / 2)
+  );
+  const endDigit = Math.min(startDigit + paginationDigits - 1, totalPages);
 
-// Pagination function
-const paginate = (pageNumber) => {
-  setCurrentPage(pageNumber);
-};
-
-const totalPages = Math.ceil(orders.length / itemsPerPage);
-
-// Calculate the range of pagination digits
-const startDigit = Math.max(1, currentPage - Math.floor(paginationDigits / 2));
-const endDigit = Math.min(startDigit + paginationDigits - 1, totalPages);
-
-// Calculate the index range for the current page
-const indexOfLastItem = currentPage * itemsPerPage;
-const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-const currentItems = orders.slice(indexOfFirstItem, indexOfLastItem);
+  // Calculate the index range for the current page
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = orders.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <>
@@ -76,6 +68,7 @@ const currentItems = orders.slice(indexOfFirstItem, indexOfLastItem);
                 <th>Order ID</th>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Service</th>
                 <th>Package</th>
                 <th>Price</th>
                 <th>Website</th>
@@ -93,6 +86,16 @@ const currentItems = orders.slice(indexOfFirstItem, indexOfLastItem);
                   <td data-th="Order ID">{item.orderId}</td>
                   <td data-th="Name">{item.customerName}</td>
                   <td data-th="Email">{item.customerEmail}</td>
+                  <td data-th="Service">
+                    {services.map(
+                      (service) =>
+                        service._id === item.serviceID && (
+                          <Link to={`/service/${service.postSlug}`}>
+                            {service.title}
+                          </Link>
+                        )
+                    )}
+                  </td>
                   <td data-th="Package">{item.packageName}</td>
                   <td data-th="Price">${item.packagePrice}</td>
                   <td data-th="Website">{item.customerWebsite}</td>
@@ -107,25 +110,28 @@ const currentItems = orders.slice(indexOfFirstItem, indexOfLastItem);
             </tbody>
           </table>
           <div className="pagination pagination__margin">
-                 <ul>
-                  <li className="d-flex">
-                  {currentPage > 1 && (
-                    <Link onClick={() => paginate(currentPage - 1)}>{"<"}</Link>
-                  )}
-                  {Array.from({ length: endDigit - startDigit + 1 }, (_, index) => (
+            <ul>
+              <li className="d-flex">
+                {currentPage > 1 && (
+                  <Link onClick={() => paginate(currentPage - 1)}>{"<"}</Link>
+                )}
+                {Array.from(
+                  { length: endDigit - startDigit + 1 },
+                  (_, index) => (
                     <Link
                       key={startDigit + index}
                       onClick={() => paginate(startDigit + index)}
                     >
                       {startDigit + index}
                     </Link>
-                  ))}
-                  {currentPage < totalPages && (
-                    <Link onClick={() => paginate(currentPage + 1)}>{">"}</Link>
-                  )}
-                  </li>
-                 </ul>
-                </div>
+                  )
+                )}
+                {currentPage < totalPages && (
+                  <Link onClick={() => paginate(currentPage + 1)}>{">"}</Link>
+                )}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </>

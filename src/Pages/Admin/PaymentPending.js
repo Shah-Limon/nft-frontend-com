@@ -8,6 +8,13 @@ const PaymentPending = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const paginationDigits = 3;
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    fetch(`http://localhost:5000/services-list/`)
+      .then((res) => res.json())
+      .then((info) => setServices(info));
+  }, []);
 
   useEffect(() => {
     fetch(`http://localhost:5000/orders`)
@@ -20,10 +27,10 @@ const PaymentPending = () => {
     (order) => order.paymentStatus === "Pending"
   );
 
- // Pagination function
- const paginate = (pageNumber) => {
-  setCurrentPage(pageNumber);
-};
+  // Pagination function
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
   const totalPendingPayment = pendingPayment.length;
 
   const totalPages = Math.ceil(totalPendingPayment / itemsPerPage);
@@ -40,12 +47,6 @@ const PaymentPending = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = pendingPayment.slice(indexOfFirstItem, indexOfLastItem);
 
-
-
-
-
- 
-
   return (
     <>
       <div className="hight-full">
@@ -57,13 +58,14 @@ const PaymentPending = () => {
               <th>SL No.</th>
               <th>Date</th>
               <th>Name</th>
+              <th>Service</th>
               <th>Package</th>
               <th>Price</th>
               <th>Website</th>
               <th>Email</th>
               <th>Note</th>
               <th>Payment Status</th>
-              
+
               <th>Edit</th>
             </tr>
             {currentItems.map((item, index) => (
@@ -71,13 +73,24 @@ const PaymentPending = () => {
                 <td>{index + 1 + (currentPage - 1) * itemsPerPage}</td>
                 <td>{item.orderDate}</td>
                 <td>{item.customerName}</td>
+
+                <td data-th="Service">
+                  {services.map(
+                    (service) =>
+                      service._id === item.serviceID && (
+                        <Link to={`/service/${service.postSlug}`}>
+                          {service.title}
+                        </Link>
+                      )
+                  )}
+                </td>
                 <td>{item.packageName}</td>
                 <td>${item.packagePrice}</td>
                 <td>{item.customerWebsite}</td>
                 <td>{item.customerEmail}</td>
                 <td>{item.customerNote}</td>
                 <td>{item.paymentStatus}</td>
-               
+
                 <td>
                   <Link to={`/admin/order/${item._id}`}>Action</Link>
                 </td>
@@ -86,25 +99,25 @@ const PaymentPending = () => {
           </tbody>
         </table>
         <div className="pagination pagination__margin">
-                 <ul>
-                  <li className="d-flex">
-                  {currentPage > 1 && (
-                    <Link onClick={() => paginate(currentPage - 1)}>{"<"}</Link>
-                  )}
-                  {Array.from({ length: endDigit - startDigit + 1 }, (_, index) => (
-                    <Link
-                      key={startDigit + index}
-                      onClick={() => paginate(startDigit + index)}
-                    >
-                      {startDigit + index}
-                    </Link>
-                  ))}
-                  {currentPage < totalPages && (
-                    <Link onClick={() => paginate(currentPage + 1)}>{">"}</Link>
-                  )}
-                  </li>
-                 </ul>
-                </div>
+          <ul>
+            <li className="d-flex">
+              {currentPage > 1 && (
+                <Link onClick={() => paginate(currentPage - 1)}>{"<"}</Link>
+              )}
+              {Array.from({ length: endDigit - startDigit + 1 }, (_, index) => (
+                <Link
+                  key={startDigit + index}
+                  onClick={() => paginate(startDigit + index)}
+                >
+                  {startDigit + index}
+                </Link>
+              ))}
+              {currentPage < totalPages && (
+                <Link onClick={() => paginate(currentPage + 1)}>{">"}</Link>
+              )}
+            </li>
+          </ul>
+        </div>
       </div>
     </>
   );

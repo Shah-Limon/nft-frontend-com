@@ -15,7 +15,8 @@ const PendingPayment = () => {
 
   let rowNumber = 1;
   return (
-    <div className="container hight-full">
+    <div className="container hight-full mt-3">
+      <h5 className="text-center">Pending Payments</h5>
       <table className="rwd-table">
         <tbody>
           <tr>
@@ -33,11 +34,11 @@ const PendingPayment = () => {
             ) {
               return (
                 <tr key={order._id}>
-                  <td>{rowNumber++}</td>
-                  <td>{order.orderId}</td>
-                  <td>{order.packageName}</td>
-                  <td>{order.packagePrice}$</td>
-                  <td>
+                  <td data-th="SL No">{rowNumber++}</td>
+                  <td data-th="Order IDW">{order.orderId}</td>
+                  <td data-th="Package Name">{order.packageName}</td>
+                  <td data-th="Amount">{order.packagePrice}$</td>
+                  <td data-th="Pay Now">
                     <Link to={`/pay-now/${order._id}`}>
                       Pay Now With PayPal
                     </Link>

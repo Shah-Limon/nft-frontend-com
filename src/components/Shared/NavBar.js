@@ -9,7 +9,6 @@ const NavBar = () => {
   const [user] = useAuthState(auth);
   const [admin, setAdmin] = useState([]);
 
-
   const handleSignout = () => {
     signOut(auth);
   };
@@ -19,13 +18,28 @@ const NavBar = () => {
       .then((res) => res.json())
       .then((info) => setLogo(info));
   }, []);
+
   useEffect(() => {
     fetch(`http://localhost:5000/users`)
       .then((res) => res.json())
       .then((info) => setAdmin(info));
   }, []);
 
- 
+  // Function to determine the dashboard link based on user role
+  const getDashboardLink = () => {
+    if (admin && admin.length > 0) {
+      const isAdmin = admin.some(
+        (userData) =>
+          userData.userEmail === user.email && userData.userRole === "Admin"
+      );
+      if (isAdmin) {
+        return "/admin/dashboard"; // Link for admin dashboard
+      } else {
+        return "/user-dashboard"; // Link for normal user dashboard
+      }
+    }
+    return "/login"; // Default to login if user data is not fetched yet or user role not found
+  };
 
   return (
     <>
@@ -35,7 +49,7 @@ const NavBar = () => {
             <div className="col-12">
               <div className="header__body">
                 <div className="header__logo">
-                  {logo.map((showLogo , index) => (
+                  {logo.map((showLogo, index) => (
                     <Link to="/" key={index}>
                       <img
                         id="site-logo"
@@ -57,7 +71,7 @@ const NavBar = () => {
                       </li>
 
                       <li className="menu-item">
-                        <Link to="/pricing">Pricing</Link>
+                        <Link to="/services">Our Services</Link>
                       </li>
                       <li className="menu-item">
                         <Link to="/about-us">About Us</Link>
@@ -76,7 +90,7 @@ const NavBar = () => {
                 </div>
                 <div className="header__action">
                   {user ? (
-                    <Link className="action-btn" to="/user-dashboard">
+                    <Link className="action-btn" to={getDashboardLink()}>
                       <span>Dashboard</span>
                     </Link>
                   ) : (

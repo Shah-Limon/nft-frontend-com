@@ -26,6 +26,12 @@ const ServiceDetails = () => {
       .then((res) => res.json())
       .then((info) => setTitle(info));
   }, []);
+  const [ServicePackage, setServicesPackages] = useState([]);
+  useEffect(() => {
+    fetch(` http://localhost:5000/service-packages`)
+      .then((res) => res.json())
+      .then((info) => setServicesPackages(info));
+  }, []);
 
   return (
     <>
@@ -111,108 +117,116 @@ const ServiceDetails = () => {
                 <div className="swiper testimonials-swiper s2">
                   <div className="container">
                     <div className="row">
-                      <div className="col-lg-4 col-md-6 col-12 margin__mobile">
-                        <div className="swiper-slide service_card z-3">
-                          <div className="box-testimonial center">
-                            <div className="image">
-                              <img src={serviceData.packageImagePackageOne} alt="" />
-                            </div>
-                            <div className="info">
-                              <h5 className="name">${serviceData.pricePackageOne} USD</h5>
+                      {ServicePackage.map(
+                        (e) =>
+                          serviceData._id === e.serviceID && (
+                            <div className="col-lg-4 col-md-6 col-12 margin__mobile">
+                              <div className="swiper-slide service_card z-3">
+                                <div className="box-testimonial center">
+                                  <div className="image">
+                                    <img src={e.img} alt="" />
+                                  </div>
+                                  <div className="info">
+                                    <h5 className="name">${e.price} USD</h5>
 
-                              <p>{serviceData && serviceData.packageNamePackageOne}</p>
-                              <img
-                                src="https://themesflat.co/html/cyfoniihtml/assets/images/icon/quote-2.png"
-                                alt=""
-                              />
+                                    <p>{e.packageName}</p>
+                                    <img
+                                      src="https://themesflat.co/html/cyfoniihtml/assets/images/icon/quote-2.png"
+                                      alt=""
+                                    />
+                                  </div>
+                                  <li className="text1">
+                                    <img
+                                      style={margin0}
+                                      src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
+                                      alt="images"
+                                    ></img>
+                                    <span>{e.featureOne}</span>
+                                  </li>
+                                  <li className="text1">
+                                    <img
+                                      style={margin0}
+                                      src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
+                                      alt="images"
+                                    ></img>
+                                    <span>{e.featureTwo}</span>
+                                  </li>{" "}
+                                  <li className="text1">
+                                    <img
+                                      style={margin0}
+                                      src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
+                                      alt="images"
+                                    ></img>
+                                    <span>{e.featureThree}</span>
+                                  </li>{" "}
+                                  <li className="text1">
+                                    <img
+                                      style={margin0}
+                                      src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
+                                      alt="images"
+                                    ></img>
+                                    <span>{e.featureFour}</span>
+                                  </li>{" "}
+                                  <li className="text1">
+                                    <img
+                                      style={margin0}
+                                      src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
+                                      alt="images"
+                                    ></img>
+                                    <span>{e.featureFive}</span>
+                                  </li>{" "}
+                                  <li className="text1">
+                                    <img
+                                      style={margin0}
+                                      src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
+                                      alt="images"
+                                    ></img>
+                                    <span>{e.featureSix}</span>
+                                  </li>{" "}
+                                  <li className="text1">
+                                    <img
+                                      style={margin0}
+                                      src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
+                                      alt="images"
+                                    ></img>
+                                    <span>{e.featureSeven}</span>
+                                  </li>{" "}
+                                  <li className="text1">
+                                    <img
+                                      style={margin0}
+                                      src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
+                                      alt="images"
+                                    ></img>
+                                    <span>{e.featureEight}</span>
+                                  </li>{" "}
+                                  <li className="text1">
+                                    <img
+                                      style={margin0}
+                                      src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
+                                      alt="images"
+                                    ></img>
+                                    <span>{e.featureNine}</span>
+                                  </li>
+                                  <li className="text1">
+                                    <img
+                                      style={margin0}
+                                      src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
+                                      alt="images"
+                                    ></img>
+                                    <span>{e.featureTen}</span>
+                                  </li>
+                                  <Link
+                                    class="action-btn"
+                                    to={`/service-package/${e._id}`}
+                                  >
+                                    {" "}
+                                    <span>Buy Now</span>
+                                  </Link>
+                                </div>
+                              </div>
                             </div>
-                            <li className="text1">
-                              <img
-                                style={margin0}
-                                src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
-                                alt="images"
-                              ></img>
-                              <span>{serviceData.featureOnePackageOne}</span>
-                            </li>
-                            <li className="text1">
-                              <img
-                                style={margin0}
-                                src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
-                                alt="images"
-                              ></img>
-                              <span>{serviceData.featureTwoPackageOne}</span>
-                            </li>{" "}
-                            <li className="text1">
-                              <img
-                                style={margin0}
-                                src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
-                                alt="images"
-                              ></img>
-                              <span>{serviceData.featureThreePackageOne}</span>
-                            </li>{" "}
-                            <li className="text1">
-                              <img
-                                style={margin0}
-                                src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
-                                alt="images"
-                              ></img>
-                              <span>{serviceData.featureFourPackageOne}</span>
-                            </li>{" "}
-                            <li className="text1">
-                              <img
-                                style={margin0}
-                                src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
-                                alt="images"
-                              ></img>
-                              <span>{serviceData.featureFivePackageOne}</span>
-                            </li>{" "}
-                            <li className="text1">
-                              <img
-                                style={margin0}
-                                src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
-                                alt="images"
-                              ></img>
-                              <span>{serviceData.featureSixPackageOne}</span>
-                            </li>{" "}
-                            <li className="text1">
-                              <img
-                                style={margin0}
-                                src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
-                                alt="images"
-                              ></img>
-                              <span>{serviceData.featureSevenPackageOne}</span>
-                            </li>{" "}
-                            <li className="text1">
-                              <img
-                                style={margin0}
-                                src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
-                                alt="images"
-                              ></img>
-                              <span>{serviceData.featureEightPackageOne}</span>
-                            </li>{" "}
-                            <li className="text1">
-                              <img
-                                style={margin0}
-                                src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
-                                alt="images"
-                              ></img>
-                              <span>{serviceData.featureNinePackageOne}</span>
-                            </li>
-                            <li className="text1">
-                              <img
-                                style={margin0}
-                                src="https://i.ibb.co/HnrpzH6/icons8-tick-16.png"
-                                alt="images"
-                              ></img>
-                              <span>{serviceData.featureTenPackageOne}</span>
-                            </li>
-                            <Link class="action-btn" to={`/package/${serviceData._id}`}>
-                              {" "}
-                              <span>Buy Now</span>
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
+                          )
+                      )}
                     </div>
                   </div>
                 </div>

@@ -8,6 +8,14 @@ const PaymentsCancelled = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const paginationDigits = 3;
+  const [services, setServices] = useState([]); 
+
+
+  useEffect(() => {
+     fetch(`http://localhost:5000/services-list/`)
+       .then((res) => res.json())
+       .then((info) => setServices(info));
+   }, []);
 
   useEffect(() => {
     fetch(`http://localhost:5000/orders`)
@@ -47,6 +55,7 @@ const currentItems = PaymentsCancelled.slice(indexOfFirstItem, indexOfLastItem);
               <th>SL No.</th>
               <th>Date</th>
               <th>Name</th>
+              <th>Service</th>
               <th>Package</th>
               <th>Price</th>
               <th>Website</th>
@@ -61,6 +70,16 @@ const currentItems = PaymentsCancelled.slice(indexOfFirstItem, indexOfLastItem);
                 <td data-th="SL No.">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
                 <td data-th="Date">{item.orderDate}</td>
                 <td data-th="Name">{item.customerName}</td>
+                <td data-th="Service">
+                    {services.map(
+                      (service) =>
+                        service._id === item.serviceID && (
+                          <Link to={`/service/${service.postSlug}`}>
+                            {service.title}
+                          </Link>
+                        )
+                    )}
+                  </td>
                 <td data-th="Package">{item.packageName}</td>
                 <td data-th="Price">${item.packagePrice}</td>
                 <td data-th="Website">{item.customerWebsite}</td>
